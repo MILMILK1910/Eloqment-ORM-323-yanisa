@@ -3,11 +3,12 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 
 export default function Index({ students }) {
-
-
     const [sortConfig, setSortConfig] = useState({ key: 'student_name', direction: 'ascending' });
+    const [searchQuery, setSearchQuery] = useState('');
+    const [filteredStudents, setFilteredStudents] = useState(students.data);
+
     // ฟังก์ชันสำหรับการจัดเรียงข้อมูล
-    const sortedStudents = [...students.data].sort((a, b) => {
+    const sortedStudents = [...filteredStudents].sort((a, b) => {
         if (a[sortConfig.key] < b[sortConfig.key]) {
             return sortConfig.direction === 'ascending' ? -1 : 1; //ให้ a อยู่ก่อน b
         }
@@ -26,6 +27,18 @@ export default function Index({ students }) {
         }
         //กำกหนดค่าใหม่เป็น direction
         setSortConfig({ key, direction });
+    };
+
+    // ฟังก์ชันสำหรับการค้นหาข้อมูล
+    const handleSearch = (event) => {
+        const query = event.target.value.toLowerCase();
+        setSearchQuery(query);
+        setFilteredStudents(students.data.filter(student =>
+            student.student_name.toLowerCase().includes(query) ||
+            student.email.toLowerCase().includes(query) ||
+            student.phone.toLowerCase().includes(query) ||
+            student.major.toLowerCase().includes(query)
+        ));
     };
 
     // ฟังก์ชันสำหรับการสร้างปุ่มการแบ่งหน้า
@@ -111,61 +124,68 @@ export default function Index({ students }) {
             >
                 <Head title="Register" />
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                        <div className="p-6 text-gray-900">
-                            <table className="min-w-full divide-y divide-gray-200 mt-4">
-                                <thead className="bg-gray-200">
-                                    <tr>
-                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider"
-                                        onClick={() => requestSort('student_name')}>
-                                            Name
-                                        </th>
-                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
-                                            Email
-                                        </th>
-                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
-                                            Phone Number
-                                        </th>
-                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
-                                            Major
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody className="bg-white divide-y divide-gray-200">
-                                    {students && students.data.length > 0 ? (
-                                        sortedStudents.map((student) => (
-                                            <tr key={student.id}>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                                    {student.student_name}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                    {student.email}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                    {student.phone}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                    {student.major}
-                                                </td>
-                                            </tr>
-                                        ))
-                                    ) : (
-                                        <tr>
-                                            <td
-                                                colSpan="4"
-                                                className="px-6 py-4 text-center text-sm text-gray-500"
-                                            >
-                                                ไม่มีข้อมูลนักเรียน
+                    <div className="p-6 text-gray-900">
+                        <input
+                            type="text"
+                            placeholder="Search student name"
+                            value={searchQuery}
+                            onChange={handleSearch}
+                            className="block w-full rounded-lg bg-white px-3.5 py-2 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 mr-6"
+                        />
+                        <table className="min-w-full divide-y divide-gray-200 mt-4">
+                            <thead className="bg-gray-200">
+                                <tr>
+                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider"
+                                    onClick={() => requestSort('student_name')}>
+                                        Name
+                                    </th>
+                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+                                        Email
+                                    </th>
+                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+                                        Phone Number
+                                    </th>
+                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+                                        Major
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody className="bg-white divide-y divide-gray-200">
+                                {students && students.data.length > 0 ? (
+                                    sortedStudents.map((student) => (
+                                        <tr key={student.id}>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                                {student.student_name}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                {student.email}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                {student.phone}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                {student.major}
                                             </td>
                                         </tr>
-                                    )}
-                                </tbody>
-                            </table>
-                            {sortedStudents.length > 0 && (
-                        <div className="flex justify-center mt-10">
-                            {renderPagination()}
-                        </div>
-                    )}
-                        </div>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td
+                                            colSpan="4"
+                                            className="px-6 py-4 text-center text-sm text-gray-500"
+                                        >
+                                            ไม่มีข้อมูลนักเรียน
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                        {sortedStudents.length > 0 && (
+                            <div className="flex justify-center mt-10">
+                                {renderPagination()}
+                            </div>
+                        )}
+                    </div>
                 </div>
             </AuthenticatedLayout>
         </div>
