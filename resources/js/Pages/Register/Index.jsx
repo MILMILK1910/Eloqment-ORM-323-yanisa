@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
-import { router } from '@inertiajs/react';
 
-export default function Index({ students}) {
+export default function Index({ students }) {
 
 
     const [sortConfig, setSortConfig] = useState({ key: 'student_name', direction: 'ascending' });
@@ -81,7 +80,8 @@ export default function Index({ students}) {
             paginationLinks.push(<span key="ellipsis2"
                 className='relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 ring-1 ring-inset ring-gray-300 focus:outline-offset-0'>...</span>);
             paginationLinks.push(
-                <button key={lastPage} className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 ring-1 ring-inset ring-gray-300 focus:outline-offset-0" onClick={() => window.location.assign(students.links[lastPage].url)}>
+                <button key={lastPage} className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 ring-1 ring-inset ring-gray-300 focus:outline-offset-0"
+                onClick={() => window.location.assign(students.last_page_url)}>
                     {lastPage}
                 </button>
             );
@@ -90,7 +90,8 @@ export default function Index({ students}) {
         // ถ้าหน้าปัจจุบันน้อยกว่าหน้าสุดท้าย ให้แสดงปุ่ม Next
         if (currentPage < lastPage) {
             paginationLinks.push(
-                <button key="next" className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0" onClick={() => window.location.assign(students.next_page_url)}>
+                <button key="next" className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+                onClick={() => window.location.assign(students.next_page_url)}>
                     Next
                 </button>
             );
